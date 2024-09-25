@@ -1,0 +1,5 @@
+requests==2.31.0
+python-dotenv==1.0.0
+dspy-ai==2.1.8
+llamaparse==0.1.1
+jambaai==0.1.0
