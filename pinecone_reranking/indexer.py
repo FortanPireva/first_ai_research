@@ -4,13 +4,15 @@ from openai import OpenAI
 import PyPDF2
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
+from dotenv import load_dotenv
 
-open_ai_api_key = "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"
+# Load environment variables
+load_dotenv()
 
 print("Initializing Pinecone...")
-pc = Pinecone(api_key='6c634c24-f8cb-44a0-829f-00532451a537')
+pc = Pinecone(api_key=os.getenv('PINECONE_API_KEY'))
 
-index_name = "polyloop-index"
+index_name = os.getenv('PINECONE_INDEX_NAME')
 if index_name not in pc.list_indexes().names():
     print(f"Creating new Pinecone index: {index_name}")
     pc.create_index(
@@ -29,7 +31,7 @@ else:
 index = pc.Index(index_name)
 
 print("Initializing OpenAI client...")
-client = OpenAI(api_key=open_ai_api_key)
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 # Function to get embeddings using OpenAI
 def get_embedding(text):
@@ -77,7 +79,7 @@ def upsert_in_batches(vectors, batch_size=100):
         print(f"Upserted batch {i//batch_size + 1} of {len(vectors)//batch_size + 1}")
 
 # Folder where PDFs are stored
-pdf_folder = "/Users/fortanpireva/Projects/Github/ai_research/dspy_llamaparse_big_file/pinecone_reranking/pdf_files"
+pdf_folder = os.getenv('PDF_FOLDER')
 print(f"Processing PDF files in folder: {pdf_folder}")
 
 # Loop through all the PDF files in the folder
